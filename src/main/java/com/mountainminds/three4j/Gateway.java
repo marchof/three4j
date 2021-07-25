@@ -22,6 +22,8 @@ import static com.mountainminds.three4j.GatewayException.STATUS_UNAUTHORIZED;
 import static com.mountainminds.three4j.HttpSupport.MULTIPART_BOUNDARY;
 import static com.mountainminds.three4j.HttpSupport.UNKNOWN_RESPONSE;
 import static com.mountainminds.three4j.HttpSupport.blobBody;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
 import java.net.URI;
@@ -182,11 +184,11 @@ public final class Gateway {
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
 	 */
-	public Set<String> getCapabilities(ThreemaID threemaid) throws GatewayException, IOException {
+	public Set<Capability> getCapabilities(ThreemaID threemaid) throws GatewayException, IOException {
 		var request = gwRequest(auth(), "capabilities", threemaid.getValue()).build();
 		var result = send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_NOTFOUND, () -> "No matching ID for " + threemaid));
-		return Set.of(result.split(","));
+		return stream(result.split(",")).map(Capability::valueOf).collect(toSet());
 	}
 
 	/**
