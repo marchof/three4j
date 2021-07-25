@@ -14,9 +14,6 @@ import software.pando.crypto.nacl.CryptoBox;
  */
 public final class KeyGenerator {
 
-	private KeyGenerator() {
-	}
-
 	/**
 	 * Create a new random key pair. You can use the methods
 	 * {@link KeyEncoder#encode(java.security.PublicKey)} and
@@ -36,6 +33,10 @@ public final class KeyGenerator {
 		out.println();
 		out.println(" public key: " + encode(keyPair.getPublic()));
 		out.println("private key: " + encode(keyPair.getPrivate()));
+	}
+
+	private KeyGenerator() {
+		// no instances
 	}
 
 }
