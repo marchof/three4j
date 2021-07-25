@@ -49,7 +49,7 @@ public final class Gateway {
 			.error(STATUS_PAYMENTREQUIRED, "no credits remaining") //
 			.error(STATUS_INTERNALSERVERERROR, "Temporary internal server error");
 
-	private final String from;
+	private final ThreemaID from;
 	private final String secret;
 	private final HttpClient httpclient;
 
@@ -60,7 +60,7 @@ public final class Gateway {
 	 * @param from   Threema ID of the sender (*XXXXXXX)
 	 * @param secret API secret as obtained from the management console
 	 */
-	public Gateway(String from, String secret) {
+	public Gateway(ThreemaID from, String secret) {
 		this(from, secret, HttpClient.newHttpClient());
 	}
 
@@ -71,7 +71,7 @@ public final class Gateway {
 	 * @param secret     API secret as obtained from the management console
 	 * @param httpclient preconfigured HTTP client
 	 */
-	public Gateway(String from, String secret, HttpClient httpclient) {
+	public Gateway(ThreemaID from, String secret, HttpClient httpclient) {
 		this.from = from;
 		this.secret = secret;
 		this.httpclient = httpclient;
@@ -87,10 +87,10 @@ public final class Gateway {
 	 * @throws IOException      when a technical communication problem occurs
 	 * @see #from {@link #getIdByPhoneNumber(Hash)}
 	 */
-	public String getIdByPhoneNumber(String number) throws GatewayException, IOException {
+	public ThreemaID getIdByPhoneNumber(String number) throws GatewayException, IOException {
 		var request = gwRequest(auth(), "lookup", "phone", number).build();
-		return send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
-				.error(STATUS_NOTFOUND, () -> "No matching ID for " + number));
+		return ThreemaID.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
+				.error(STATUS_NOTFOUND, () -> "No matching ID for " + number)));
 	}
 
 	/**
@@ -102,10 +102,10 @@ public final class Gateway {
 	 * @throws IOException      when a technical communication problem occurs
 	 * @see Hash#ofPhone(String)
 	 */
-	public String getIdByPhoneNumber(Hash number) throws GatewayException, IOException {
+	public ThreemaID getIdByPhoneNumber(Hash number) throws GatewayException, IOException {
 		var request = gwRequest(auth(), "lookup", "phone_hash", number.getHexValue()).build();
-		return send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
-				.error(STATUS_NOTFOUND, () -> "No matching ID for " + number));
+		return ThreemaID.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
+				.error(STATUS_NOTFOUND, () -> "No matching ID for " + number)));
 	}
 
 	/**
@@ -118,10 +118,10 @@ public final class Gateway {
 	 * @throws IOException      when a technical communication problem occurs
 	 * @see #from {@link #getIdByEmailAddress(Hash)}
 	 */
-	public String getIdByEmailAddress(String address) throws GatewayException, IOException {
+	public ThreemaID getIdByEmailAddress(String address) throws GatewayException, IOException {
 		var request = gwRequest(auth(), "lookup", "email", address).build();
-		return send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
-				.error(STATUS_NOTFOUND, () -> "No matching ID for " + address));
+		return ThreemaID.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
+				.error(STATUS_NOTFOUND, () -> "No matching ID for " + address)));
 	}
 
 	/**
@@ -133,10 +133,10 @@ public final class Gateway {
 	 * @throws IOException      when a technical communication problem occurs
 	 * @see Hash#ofEmail(String)
 	 */
-	public String getIdByEmailAddress(Hash address) throws GatewayException, IOException {
+	public ThreemaID getIdByEmailAddress(Hash address) throws GatewayException, IOException {
 		var request = gwRequest(auth(), "lookup", "email_hash", address.getHexValue()).build();
-		return send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
-				.error(STATUS_NOTFOUND, () -> "No matching ID for " + address));
+		return ThreemaID.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
+				.error(STATUS_NOTFOUND, () -> "No matching ID for " + address)));
 	}
 
 	/**
@@ -161,8 +161,8 @@ public final class Gateway {
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
 	 */
-	public PublicKey getPublicKey(String threemaid) throws GatewayException, IOException {
-		var request = gwRequest(auth(), "pubkeys", threemaid).build();
+	public PublicKey getPublicKey(ThreemaID threemaid) throws GatewayException, IOException {
+		var request = gwRequest(auth(), "pubkeys", threemaid.getValue()).build();
 		return KeyEncoder.decodePublicKey(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_NOTFOUND, () -> "No matching ID for " + threemaid)));
 	}
@@ -182,8 +182,8 @@ public final class Gateway {
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
 	 */
-	public Set<String> getCapabilities(String threemaid) throws GatewayException, IOException {
-		var request = gwRequest(auth(), "capabilities", threemaid).build();
+	public Set<String> getCapabilities(ThreemaID threemaid) throws GatewayException, IOException {
+		var request = gwRequest(auth(), "capabilities", threemaid.getValue()).build();
 		var result = send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_NOTFOUND, () -> "No matching ID for " + threemaid));
 		return Set.of(result.split(","));
@@ -199,10 +199,10 @@ public final class Gateway {
 	 * @return message id
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
-	 * @see #sendMessage(String, EncryptedMessage)
+	 * @see #sendMessage(ThreemaID, EncryptedMessage)
 	 */
-	public MessageId sendSimpleMessage(String toThreemid, String text) throws GatewayException, IOException {
-		return sendSimpleMessage("to", toThreemid, text);
+	public MessageId sendSimpleMessage(ThreemaID toThreemid, String text) throws GatewayException, IOException {
+		return sendSimpleMessage("to", toThreemid.getValue(), text);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public final class Gateway {
 	 * @return message id
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
-	 * @see #sendMessage(String, EncryptedMessage)
+	 * @see #sendMessage(ThreemaID, EncryptedMessage)
 	 */
 	public MessageId sendSimpleMessageToPhoneNumber(String phone, String text) throws GatewayException, IOException {
 		return sendSimpleMessage("phone", phone, text);
@@ -231,7 +231,7 @@ public final class Gateway {
 	 * @return message id
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
-	 * @see #sendMessage(String, EncryptedMessage)
+	 * @see #sendMessage(ThreemaID, EncryptedMessage)
 	 */
 	public MessageId sendSimpleMessageToEmailAddress(String email, String text) throws GatewayException, IOException {
 		return sendSimpleMessage("email", email, text);
@@ -263,9 +263,9 @@ public final class Gateway {
 	 * @throws GatewayException when the Gateway reports an error status
 	 * @throws IOException      when a technical communication problem occurs
 	 */
-	public MessageId sendMessage(String toThreemid, EncryptedMessage msg) throws GatewayException, IOException {
+	public MessageId sendMessage(ThreemaID toThreemid, EncryptedMessage msg) throws GatewayException, IOException {
 		var body = auth() //
-				.add("to", toThreemid) //
+				.add("to", toThreemid.getValue()) //
 				.add("box", msg.getHexContent()) //
 				.add("nonce", msg.getNonce().getHexValue()).toBody();
 		var request = gwRequest("send_e2e") //
@@ -348,7 +348,7 @@ public final class Gateway {
 	}
 
 	private HttpSupport.UrlParams auth() {
-		return new HttpSupport.UrlParams().add("from", from).add("secret", secret);
+		return new HttpSupport.UrlParams().add("from", from.getValue()).add("secret", secret);
 	}
 
 	private <T> T send(HttpRequest request, BodyHandler<T> handler, StatusHandler statusHandler)

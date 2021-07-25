@@ -45,7 +45,7 @@ To use the gateway API client you need a gateway Threema ID and the
 corresponding secret which was issued by the gateway admin interface:
 
 ```java
-String from = // e.g. "*YOURGWY", retrieve this from a secure location
+ThreemaID from = ThreemaID.of("*YOURGWY"); // Insert your ID here
 String secret = // e.g. "JSH5y9DfvOROm2Iw", retrieve this from a secure location
 ```
 
@@ -74,15 +74,15 @@ be queried to lookup their Threema ID. Note that we do not disclose
 the actual data but only send hash values:
 
 ```java
-String receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+411234567"));
-System.out.println("Threema ID: " + receiverId);
+ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+411234567"));
+System.out.println(receiverId);
 ```
 
 Or by Email address:
 
 ```java
 receiverId = gw.getIdByEmailAddress(Hash.ofEmail("test@example.com"));
-System.out.println("Threema ID: " + receiverId);
+System.out.println(receiverId);
 ```
 
 Depending on the client the receiver might be able to process certain
@@ -183,7 +183,7 @@ is managed for you on the gateway server. Please rather consider
 using end-to-end encryption as described above.
 
 ```java
-gw.sendSimpleMessage("ABCDEFGH", "Not so secret message.");
+gw.sendSimpleMessage(ThreemaID.of("ABCDEFGH"), "Not so secret message.");
 ```
 
 Alternatively you can also use a international telephone number or a

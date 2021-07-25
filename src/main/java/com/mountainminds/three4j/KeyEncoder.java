@@ -92,12 +92,24 @@ public final class KeyEncoder {
 	}
 
 	/**
+	 * Creates the QR code text to exchange Threema ids. This can be used for
+	 * example for gateway ids to establish a direct trust relationship with users.
+	 * 
+	 * @param threemaid 8 character long Threema id
+	 * @param publicKey public key
+	 * @return QR code text
+	 */
+	public String qrcode(ThreemaID threemaid, PublicKey publicKey) {
+		return String.format("3mid:%s,%s", threemaid.getValue(), encode(publicKey));
+	}
+
+	/**
 	 * Converts a byte array into its hex representation
 	 * 
 	 * @param bytes byte array of arbitrary size
 	 * @return hex string (twice as many digits as bytes)
 	 */
-	public static String toHex(byte[] bytes) {
+	static String toHex(byte[] bytes) {
 		var sb = new StringBuilder();
 		for (var b : bytes) {
 			sb.append(Character.forDigit((b & 0xff) >> 4, 16));
@@ -112,7 +124,7 @@ public final class KeyEncoder {
 	 * @param hex hex string
 	 * @return byte array (half the size than hex digits)
 	 */
-	public static byte[] fromHex(String hex) {
+	static byte[] fromHex(String hex) {
 		var bytes = new byte[hex.length() / 2];
 		for (int i = 0; i < bytes.length; i++) {
 			var d1 = Character.digit(hex.charAt(2 * i), 16);
@@ -120,30 +132,6 @@ public final class KeyEncoder {
 			bytes[i] = (byte) ((d1 << 4) | d2);
 		}
 		return bytes;
-	}
-
-	/**
-	 * Creates the QR code text to exchange Threema ids. This can be used for
-	 * example for gateway ids to establish a direct trust relationship.
-	 * 
-	 * @param threemaid 8 character long Threema id
-	 * @param publicKey 32 character long hex encoded public key
-	 * @return QR code text
-	 */
-	public String qrcode(String threemaid, String publicKey) {
-		return String.format("3mid:%s,%s", threemaid, publicKey);
-	}
-
-	/**
-	 * Creates the QR code text to exchange Threema ids. This can be used for
-	 * example for gateway ids to establish a direct trust relationship with users.
-	 * 
-	 * @param threemaid 8 character long Threema id
-	 * @param publicKey public key
-	 * @return QR code text
-	 */
-	public String qrcode(String threemaid, PublicKey publicKey) {
-		return qrcode(threemaid, encode(publicKey));
 	}
 
 	private static byte[] reverse(byte[] array) {
