@@ -19,6 +19,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
@@ -130,7 +131,8 @@ final class HttpSupport {
 	static Map<String, String> decodeUrlParams(String paramstr) {
 		return Arrays.stream(paramstr.split("&")) //
 				.map(s -> s.split("=")) //
-				.collect(Collectors.toMap(a -> a[0], a -> a[1]));
+				.collect(Collectors.toMap(k -> URLDecoder.decode(k[0], US_ASCII),
+						v -> URLDecoder.decode(v[1], US_ASCII)));
 	}
 
 	private HttpSupport() {

@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.mountainminds.three4j.HttpSupport.UrlParams;
+
 public class HttpSupportTest {
 
 	@Test
@@ -69,8 +71,15 @@ public class HttpSupportTest {
 	}
 
 	@Test
+	void urlparams_should_encode_parameters() {
+		var params = new UrlParams();
+		params.add("a", "123").add("b", "Hello+World!");
+		assertEquals("a=123&b=Hello%2BWorld%21", params.toString());
+	}
+
+	@Test
 	void decodeUrlParams_should_decode_params() {
-		assertEquals(Map.of("a", "123", "b", "Hello+World!"), decodeUrlParams("a=123&b=Hello+World!"));
+		assertEquals(Map.of("a", "123", "b", "Hello World!"), decodeUrlParams("a=123&b=Hello+World%21"));
 	}
 
 }
