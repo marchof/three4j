@@ -74,7 +74,7 @@ be queried to lookup their Threema ID. Note that we do not disclose
 the actual data but only send hash values:
 
 ```java
-ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+411234567"));
+ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
 System.out.println(receiverId);
 ```
 
@@ -90,7 +90,7 @@ message types only. You can check the capabilities of a given Threema
 ID:
 
 ```java
-System.out.println("Capabilities: " + gw.getCapabilities(receiverId));
+System.out.println(gw.getCapabilities(receiverId));
 ```
 
 ### Encrypted Text Messages
@@ -114,7 +114,7 @@ PlainMessage msg = new PlainMessage.Text(text);
 EncryptedMessage encrypted = msg.encrypt(myPrivateKey, receiverPublicKey);
 MessageId messageId = gw.sendMessage(receiverId, encrypted);
 
-System.out.println("Message ID: " + messageId);
+System.out.println(messageId);
 ```
 
 ### Encrypted Image Messages

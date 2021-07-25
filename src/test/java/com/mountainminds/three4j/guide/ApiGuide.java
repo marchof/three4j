@@ -75,7 +75,7 @@ public class ApiGuide {
 		// the actual data but only send hash values:
 
 		// <CODE>
-		ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+411234567"));
+		ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
 		System.out.println(receiverId);
 		// </CODE>
 
@@ -91,7 +91,7 @@ public class ApiGuide {
 		// ID:
 
 		// <CODE>
-		System.out.println("Capabilities: " + gw.getCapabilities(receiverId));
+		System.out.println(gw.getCapabilities(receiverId));
 		// </CODE>
 
 		return receiverId;
@@ -120,7 +120,7 @@ public class ApiGuide {
 		EncryptedMessage encrypted = msg.encrypt(myPrivateKey, receiverPublicKey);
 		MessageId messageId = gw.sendMessage(receiverId, encrypted);
 
-		System.out.println("Message ID: " + messageId);
+		System.out.println(messageId);
 		// </CODE>
 	}
 
