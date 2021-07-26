@@ -14,6 +14,21 @@ The following resources have been used to implement this API:
 * [Cryptography Whitepaper](https://threema.ch/press-files/2_documentation/cryptography_whitepaper.pdf)
 * [Threema Encryption Validation](https://threema.ch/validation/)
 
+## Maven Artifacts
+
+The latest Three4J version can be obtained with the following Maven dependency:
+
+```xml
+<dependency>
+    <groupId>com.mountainminds</groupId>
+    <artifactId>three4j</artifactId>
+    <version>TODO</version>
+</dependency>
+```
+
+Latest builds from `master` are available in this snapshot repository:
+<a href="https://s01.oss.sonatype.org/content/repositories/snapshots/">https://s01.oss.sonatype.org/content/repositories/snapshots/</a>
+
 
 ## Prerequisites
 
