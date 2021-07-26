@@ -15,5 +15,15 @@ jobs:
       with:
         java-version: 11
         distribution: adopt
+        server-id: ossrh
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
     - name: Build with Maven
-      run: mvn -B clean package --file pom.xml
+      run: mvn -B clean package
+    - name: Deploy Snapshot
+      if: github.ref == 'refs/heads/master'
+      run: mvn -B deploy
+      env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+      
