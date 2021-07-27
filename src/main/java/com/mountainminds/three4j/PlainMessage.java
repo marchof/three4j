@@ -55,7 +55,8 @@ public abstract class PlainMessage {
 		try (var buffer = new ByteArrayOutputStream(); var out = new DataOutputStream(buffer)) {
 			out.write(getType());
 			encode(out);
-			int padding = 0xFF & Bytes.secureRandom(1)[0];
+			// add random padding of 1 - 255 bytes (PKCS#7 style)
+			int padding = Math.max(1, 0xFF & Bytes.secureRandom(1)[0]);
 			for (int i = 0; i < padding; i++) {
 				out.write(padding);
 			}
