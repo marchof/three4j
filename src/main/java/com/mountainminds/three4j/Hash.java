@@ -44,6 +44,10 @@ public final class Hash extends ByteArrayValue {
 		super(value, SIZE);
 	}
 
+	static Hash of(String hex) {
+		return new Hash(KeyEncoder.fromHex(hex));
+	}
+
 	private static Hash of(String input, byte[] key) {
 		final Mac mac = newMAC(key);
 		return new Hash(mac.doFinal(input.getBytes(US_ASCII)));

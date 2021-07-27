@@ -34,6 +34,7 @@ import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.security.PublicKey;
+import java.util.Map;
 import java.util.Set;
 
 import com.mountainminds.three4j.HttpSupport.StatusHandler;
@@ -139,6 +140,62 @@ public final class Gateway {
 		var request = gwRequest(auth(), "lookup", "email_hash", address.getHexValue()).build();
 		return ThreemaID.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_NOTFOUND, () -> "No matching ID for " + address)));
+	}
+
+	/**
+	 * Return value for {@link Gateway#bulkLookup(Set, Set)} wrapping a Threema ID
+	 * with its corresponding public key.
+	 */
+	public static class IDKey {
+
+		private ThreemaID id;
+		private PublicKey key;
+
+		IDKey(String id, String key) {
+			this.id = ThreemaID.of(id);
+			this.key = KeyEncoder.decodePublicKey(key);
+		}
+
+		/**
+		 * @return Threema ID
+		 */
+		public ThreemaID getId() {
+			return id;
+		}
+
+		/**
+		 * @return corresponding public key
+		 */
+		public PublicKey getKey() {
+			return key;
+		}
+
+		@Override
+		public String toString() {
+			return "IDKey[" + id.getValue() + ", " + KeyEncoder.encode(key) + "]";
+		}
+
+	}
+
+	/**
+	 * Lookup multiple Threema IDs by email or phone hashes. The response contains
+	 * the Threema ID along with the corresponding public key ({@link IDKey}).
+	 * 
+	 * @param phoneHashes set of hashes created with {@link Hash#ofPhone(String)}
+	 * @param emailHashes set of hashes created with {@link Hash#ofEmail(String)}
+	 * @return map with entries for every hash where a Threema ID was found for
+	 * @throws GatewayException when the Gateway reports an error status
+	 * @throws IOException      when a technical communication problem occurs
+	 */
+	public Map<Hash, IDKey> bulkLookup(Set<Hash> phoneHashes, Set<Hash> emailHashes)
+			throws GatewayException, IOException {
+		var requestbody = BulkLookup.writeRequest(phoneHashes, emailHashes);
+		var request = gwRequest(auth(), "lookup", "bulk") //
+				.POST(HttpRequest.BodyPublishers.ofString(requestbody)) //
+				.build();
+		return BulkLookup.readResponse(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
+				.error(STATUS_BADREQUEST, "invalid JSON or hash length") //
+				.error(STATUS_PAYLOADTOOLARGE, "too many hashes")));
 	}
 
 	/**
