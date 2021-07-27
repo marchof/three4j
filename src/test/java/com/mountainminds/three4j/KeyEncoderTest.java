@@ -23,13 +23,13 @@ import org.junit.jupiter.api.Test;
 public class KeyEncoderTest {
 
 	@Test
-	void toHex_should_encode_byte_array() {
+	public void toHex_should_encode_byte_array() {
 		var content = new byte[] { (byte) 0x00, (byte) 0xff, (byte) 0x83 };
 		assertEquals("00ff83", toHex(content));
 	}
 
 	@Test
-	void fromHex_should_decode_hex_string() {
+	public void fromHex_should_decode_hex_string() {
 		var expected = new byte[] { (byte) 0x00, (byte) 0xb5, (byte) 0xff };
 		assertArrayEquals(expected, fromHex("00b5ff"));
 	}

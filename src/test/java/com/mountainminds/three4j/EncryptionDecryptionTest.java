@@ -37,13 +37,13 @@ public class EncryptionDecryptionTest {
 	KeyPair bob;
 
 	@BeforeEach
-	void create_keys() {
+	public void create_keys() {
 		alice = CryptoBox.keyPair();
 		bob = CryptoBox.keyPair();
 	}
 
 	@Test
-	void should_encrypt_and_decrypt_text_messages() {
+	public void should_encrypt_and_decrypt_text_messages() {
 		var msg = new Text("secret123");
 
 		var encrypted = msg.encrypt(alice.getPrivate(), bob.getPublic());
@@ -53,7 +53,7 @@ public class EncryptionDecryptionTest {
 	}
 
 	@Test
-	void should_encrypt_and_decrypt_image_messages() {
+	public void should_encrypt_and_decrypt_image_messages() {
 		var pair = KeyGenerator.generate();
 		var blob = Blob.newImage(pair.getPrivate(), pair.getPublic())
 				.uploaded(BlobId.of("00001111222233334444555566667777"), 42);
@@ -68,7 +68,7 @@ public class EncryptionDecryptionTest {
 	}
 
 	@Test
-	void should_encrypt_and_decrypt_file_messages() {
+	public void should_encrypt_and_decrypt_file_messages() {
 		var fileblob = Blob.newFile().uploaded(BlobId.of("01234567012345670123456701234567"), 1024);
 		var msg = new File(fileblob, "application/test", PlainMessage.File.RenderingType.STICKER);
 		msg.setFileName("document.pdf");
@@ -93,7 +93,7 @@ public class EncryptionDecryptionTest {
 	}
 
 	@Test
-	void should_encrypt_and_decrypt_deliveryreceipt_messages() {
+	public void should_encrypt_and_decrypt_deliveryreceipt_messages() {
 		var msg = new DeliveryReceipt(ReceiptType.THUMBSUP,
 				List.of(MessageId.of("aaaaaaaaaaaaaaaa"), MessageId.of("bbbbbbbbbbbbbbbb")));
 
@@ -107,7 +107,7 @@ public class EncryptionDecryptionTest {
 	}
 
 	@Test()
-	void decryption_should_fail_when_you_use_the_wrong_keys() {
+	public void decryption_should_fail_when_you_use_the_wrong_keys() {
 		var msg = new Text("secret123");
 		var encrypted = msg.encrypt(alice.getPrivate(), bob.getPublic());
 
@@ -116,7 +116,7 @@ public class EncryptionDecryptionTest {
 	}
 
 	@Test()
-	void decryption_should_fail_when_the_message_is_altered() {
+	public void decryption_should_fail_when_the_message_is_altered() {
 		var msg = new Text("secret123");
 		var encrypted = msg.encrypt(alice.getPrivate(), bob.getPublic());
 		var content = encrypted.getContent();

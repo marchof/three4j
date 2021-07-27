@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class ApiGuideTest {
 
 	@Test
-	void readme_should_contain_latest_apiguide_source() throws IOException {
+	public void readme_should_contain_latest_apiguide_source() throws IOException {
 		var actual = Files.readAllLines(ApiGuide2MD.README, UTF_8);
 		var expected = new ArrayList<String>();
 		ApiGuide2MD.writeUpdatedAPIGuide(actual, expected::add);
