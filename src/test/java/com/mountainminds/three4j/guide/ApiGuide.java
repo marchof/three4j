@@ -14,12 +14,15 @@
 package com.mountainminds.three4j.guide;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Instant;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import com.mountainminds.three4j.Blob;
 import com.mountainminds.three4j.EncryptedMessage;
@@ -32,7 +35,10 @@ import com.mountainminds.three4j.PlainMessage;
 import com.mountainminds.three4j.PlainMessage.File.RenderingType;
 import com.mountainminds.three4j.ThreemaID;
 import com.mountainminds.three4j.UploadedBlob;
-import com.sun.net.httpserver.HttpServer;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Compilable and executable example code which is used to generate the
@@ -40,7 +46,7 @@ import com.sun.net.httpserver.HttpServer;
  */
 public class ApiGuide {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		// ### Setup
 		//
@@ -74,6 +80,8 @@ public class ApiGuide {
 		ThreemaID receiverId = lookups(gw);
 		sendtextmessage(gw, myPrivateKey, receiverId);
 		simplemessage(gw);
+
+		callbackserver(gw, secret, myPrivateKey);
 
 	}
 
@@ -245,7 +253,7 @@ public class ApiGuide {
 
 	}
 
-	static void callbackserver(Gateway gw, String secret, PrivateKey myPrivateKey) throws IOException {
+	static void callbackserver(Gateway gw, String secret, PrivateKey myPrivateKey) throws Exception {
 
 		// ### Callback Handling
 		//
@@ -254,25 +262,28 @@ public class ApiGuide {
 		// public internet of course. The payload can be decoded with the
 		// `GatewayCallback` class:
 
-		HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8888), 0);
-		server.createContext("/", exchange -> {
+		Server server = new Server(8888);
+		server.setHandler(new AbstractHandler() {
 
-			// <CODE>
-			byte[] body = // unprocessed body received from the HTTP server of your choice
-					exchange.getRequestBody().readAllBytes(); // HIDE
+			@Override
+			public void handle(String target, Request baseRequest, HttpServletRequest request,
+					HttpServletResponse response) throws IOException, ServletException {
+				// <CODE>
+				byte[] body = // unprocessed body received from the HTTP server of your choice
+						request.getInputStream().readAllBytes(); // HIDE
 
-			GatewayCallback callback = new GatewayCallback(body, secret);
-			PublicKey publicKey = gw.getPublicKey(callback.getFrom());
-			PlainMessage message = callback.getMessage().decrypt(publicKey, myPrivateKey);
+				GatewayCallback callback = new GatewayCallback(body, secret);
+				PublicKey publicKey = gw.getPublicKey(callback.getFrom());
+				PlainMessage message = callback.getMessage().decrypt(publicKey, myPrivateKey);
 
-			System.out.println(message);
-			// </CODE>
+				System.out.println(message);
+				// </CODE>
 
-			byte[] response = "ok".getBytes();
-			exchange.sendResponseHeaders(200, response.length);
-			exchange.getResponseBody().write(response);
-			exchange.close();
+				response.getWriter().println("ok");
+				baseRequest.setHandled(true);
+			}
 		});
+
 		server.start();
 
 	}
