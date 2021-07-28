@@ -33,7 +33,7 @@ import com.mountainminds.three4j.KeyEncoder;
 import com.mountainminds.three4j.MessageId;
 import com.mountainminds.three4j.PlainMessage;
 import com.mountainminds.three4j.PlainMessage.File.RenderingType;
-import com.mountainminds.three4j.ThreemaID;
+import com.mountainminds.three4j.ThreemaId;
 import com.mountainminds.three4j.UploadedBlob;
 
 import jakarta.servlet.ServletException;
@@ -54,8 +54,8 @@ public class ApiGuide {
 		// corresponding secret which was issued by the gateway admin interface:
 
 		// <CODE>
-		ThreemaID from = ThreemaID.of("*YOURGWY"); // Insert your ID here
-		from = ThreemaID.of(args[0]); // HIDE
+		ThreemaId from = ThreemaId.of("*YOURGWY"); // Insert your ID here
+		from = ThreemaId.of(args[0]); // HIDE
 		String secret = // e.g. "JSH5y9DfvOROm2Iw", retrieve this from a secure location
 				args[1]; // HIDE
 		// </CODE>
@@ -77,7 +77,7 @@ public class ApiGuide {
 		PrivateKey myPrivateKey = KeyEncoder.decodePrivateKey(myPrivateKeyStr);
 		// </CODE>
 
-		ThreemaID receiverId = lookups(gw);
+		ThreemaId receiverId = lookups(gw);
 		sendtextmessage(gw, myPrivateKey, receiverId);
 		simplemessage(gw);
 
@@ -85,7 +85,7 @@ public class ApiGuide {
 
 	}
 
-	static ThreemaID lookups(Gateway gw) throws IOException {
+	static ThreemaId lookups(Gateway gw) throws IOException {
 
 		// ### Lookups
 		//
@@ -96,7 +96,7 @@ public class ApiGuide {
 		// the actual data but only send hash values:
 
 		// <CODE>
-		ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
+		ThreemaId receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
 		System.out.println(receiverId);
 		// </CODE>
 
@@ -118,7 +118,7 @@ public class ApiGuide {
 		return receiverId;
 	}
 
-	static void sendtextmessage(Gateway gw, PrivateKey myPrivateKey, ThreemaID receiverId) throws IOException {
+	static void sendtextmessage(Gateway gw, PrivateKey myPrivateKey, ThreemaId receiverId) throws IOException {
 
 		// ### Encrypted Text Messages
 		//
@@ -145,7 +145,7 @@ public class ApiGuide {
 		// </CODE>
 	}
 
-	static void sendimagemessage(Gateway gw, PrivateKey myPrivateKey, ThreemaID receiverId) throws IOException {
+	static void sendimagemessage(Gateway gw, PrivateKey myPrivateKey, ThreemaId receiverId) throws IOException {
 
 		PublicKey receiverPublicKey = gw.getPublicKey(receiverId);
 
@@ -180,17 +180,16 @@ public class ApiGuide {
 
 	}
 
-	static void sendfilemessage(Gateway gw, PrivateKey myPrivateKey, ThreemaID receiverId) throws IOException {
+	static void sendfilemessage(Gateway gw, PrivateKey myPrivateKey, ThreemaId receiverId) throws IOException {
 
 		PublicKey receiverPublicKey = gw.getPublicKey(receiverId);
 
 		// ### Encrypted File Messages
 		//
-		// Like images we can encrypt and send arbitrary files. But unlike
-		// images files are encrypted with a random key which is then
-		// transmitted the with the corresponding message. Also for files an
-		// optional preview image can be added which must be encrypted with the
-		// same key than the file. The Three4J API makes this process simple:
+		// We can encrypt and send arbitrary files. Files are encrypted with a
+		// random key which is then transmitted with the corresponding message.
+		// An optional preview image can be added which must be encrypted with
+		// the same key than the file:
 
 		// <CODE>
 		byte[] file = Files.readAllBytes(Path.of("src/test/resources/document.pdf"));
@@ -225,7 +224,7 @@ public class ApiGuide {
 		// using end-to-end encryption as described above.
 
 		// <CODE>
-		gw.sendSimpleMessage(ThreemaID.of("ABCDEFGH"), "Not so secret message.");
+		gw.sendSimpleMessage(ThreemaId.of("ABCDEFGH"), "Not so secret message.");
 		// </CODE>
 
 		// Alternatively you can also use a international telephone number or a

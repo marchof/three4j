@@ -39,18 +39,40 @@ public class Blob {
 		this.nonce = nonce;
 	}
 
+	/**
+	 * Returns the secret key used to encode and decode this blob.
+	 * 
+	 * @return secret key
+	 */
 	public SecretKey getKey() {
 		return key;
 	}
 
+	/**
+	 * Returns the nonce to encode and decode this blob.
+	 * 
+	 * @return nonce
+	 */
 	public Nonce getNonce() {
 		return nonce;
 	}
 
+	/**
+	 * Encrypts the given binary data.
+	 * 
+	 * @param plaincontent plain content
+	 * @return encrypted content
+	 */
 	public byte[] encrypt(byte[] plaincontent) {
 		return SecretBox.encrypt(key, nonce.getValue(), plaincontent).getCiphertextWithTag();
 	}
 
+	/**
+	 * Decrypts the given binary data.
+	 * 
+	 * @param encryptedcontent encrypted content
+	 * @return plain content
+	 */
 	public byte[] decrypt(byte[] encryptedcontent) {
 		return SecretBox.fromCombined(nonce.getValue(), encryptedcontent).decrypt(key);
 	}
@@ -77,14 +99,33 @@ public class Blob {
 
 	// Factory methods
 
+	/**
+	 * Creates a new blob to hold an image which will be encrypted based on the
+	 * given keys.
+	 * 
+	 * @param privatekey private key of one party
+	 * @param publicKey  public key of the other party
+	 * @return blob handle
+	 */
 	public static Blob newImage(PrivateKey privatekey, PublicKey publicKey) {
 		return new Blob((SecretKey) CryptoBox.agree(privatekey, publicKey), Nonce.random());
 	}
 
+	/**
+	 * Creates a new file blob with a random encryption key.
+	 * 
+	 * @return new blob handle
+	 */
 	public static Blob newFile() {
 		return ofFile(SecretBox.key());
 	}
 
+	/**
+	 * Creates a new file blob with the given encryption key.
+	 * 
+	 * @param key encryption key
+	 * @return new blob handle
+	 */
 	static Blob ofFile(SecretKey key) {
 		return new Blob(key, FILE_NONCE);
 	}

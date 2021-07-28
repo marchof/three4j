@@ -15,21 +15,32 @@
 /**
  * <p>
  * Java client for the <a href="https://gateway.threema.ch/">Threema
- * Gateway</a>. The class {@link Gateway} represents the client to the API,
- * while {@link GatewayCallback} is used to decode incoming requests.
+ * Gateway</a>. A {@link Gateway} instances can send requests to the Threema
+ * gateway. A {@link GatewayCallback} is used to decode incoming requests.
  * </p>
  * 
  * <p>
- * While all messages are transfered as a {@link EncryptedMessage} the
- * unencrypted {@link PlainMessage} exists in the following flavours:
+ * A {@link PlainMessage} exists in the following flavours:
  * </p>
  * 
  * <ul>
- * <li>{@link PlainMessage.Text}
- * <li>{@link PlainMessage.Image}
- * <li>{@link PlainMessage.File}
- * <li>{@link PlainMessage.DeliveryReceipt}
+ * <li>{@link PlainMessage.Text}</li>
+ * <li>{@link PlainMessage.Image}</li>
+ * <li>{@link PlainMessage.File}</li>
+ * <li>{@link PlainMessage.DeliveryReceipt}</li>
  * </ul>
+ * 
+ * <p>
+ * It can be encrypted with
+ * {@link PlainMessage#encrypt(java.security.PrivateKey, java.security.PublicKey)}
+ * to a {@link EncryptedMessage}, which can be decrypted with
+ * {@link EncryptedMessage#decrypt(java.security.PublicKey, java.security.PrivateKey)}.
+ * </p>
+ *
+ * <p>
+ * Binary content like images od files are transmitted separately as a
+ * {@link com.mountainminds.three4j.Blob}.
+ * </p>
  * 
  * <p>
  * For type safety the API uses specific wrapper types instead of
@@ -37,12 +48,14 @@
  * </p>
  * 
  * <ul>
- * <li>{@link MessageId}
- * <li>{@link Nonce}
- * <li>{@link BlobId}
- * <li>{@link Hash}
- * <li>{@link java.security.PublicKey}
- * <li>{@link java.security.PrivateKey}
+ * <li>{@link ThreemaId}</li>
+ * <li>{@link MessageId}</li>
+ * <li>{@link Nonce}</li>
+ * <li>{@link BlobId}</li>
+ * <li>{@link Hash}</li>
+ * <li>{@link java.security.PublicKey}</li>
+ * <li>{@link java.security.PrivateKey}</li>
+ * <li>{@link javax.crypto.SecretKey}</li>
  * </ul>
  */
 package com.mountainminds.three4j;

@@ -29,8 +29,8 @@ public class GatewayCallback {
 
 	private static final Charset ENCODING = US_ASCII;
 
-	private final ThreemaID from;
-	private final ThreemaID to;
+	private final ThreemaId from;
+	private final ThreemaId to;
 	private final MessageId messageId;
 	private final Instant date;
 	private EncryptedMessage message;
@@ -56,8 +56,8 @@ public class GatewayCallback {
 			throw new IllegalArgumentException("Invalid signature");
 		}
 
-		from = ThreemaID.of(params.get("from"));
-		to = ThreemaID.of(params.get("to"));
+		from = ThreemaId.of(params.get("from"));
+		to = ThreemaId.of(params.get("to"));
 		messageId = MessageId.of(params.get("messageId"));
 		date = Instant.ofEpochSecond(Long.parseLong(params.get("date")));
 		message = new EncryptedMessage(params.get("box"), Nonce.of(params.get("nonce")));
@@ -79,14 +79,14 @@ public class GatewayCallback {
 	/**
 	 * @return sender Threema ID
 	 */
-	public ThreemaID getFrom() {
+	public ThreemaId getFrom() {
 		return from;
 	}
 
 	/**
 	 * @return receiver API identity
 	 */
-	public ThreemaID getTo() {
+	public ThreemaId getTo() {
 		return to;
 	}
 

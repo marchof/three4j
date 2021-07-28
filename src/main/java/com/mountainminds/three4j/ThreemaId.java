@@ -16,19 +16,19 @@ package com.mountainminds.three4j;
 /**
  * Eight character Threema ID.
  */
-public final class ThreemaID {
+public final class ThreemaId {
 
 	private final String value;
 
-	private ThreemaID(String value) throws IllegalArgumentException {
+	private ThreemaId(String value) throws IllegalArgumentException {
 		if (value.length() != 8) {
 			throw new IllegalArgumentException("Illegal Threema ID length: " + value);
 		}
 		this.value = value;
 	}
 
-	public static ThreemaID of(String value) {
-		return new ThreemaID(value);
+	public static ThreemaId of(String value) {
+		return new ThreemaId(value);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public final class ThreemaID {
 		if (other == null || !this.getClass().equals(other.getClass())) {
 			return false;
 		}
-		return value.equals(((ThreemaID) other).value);
+		return value.equals(((ThreemaId) other).value);
 	}
 
 	@Override

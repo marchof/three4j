@@ -11,6 +11,12 @@
 //
 // SPDX-License-Identifier: MIT
 // *****************************************************************************
+
+/**
+ * Java client for the <a href="https://gateway.threema.ch/">Threema
+ * Gateway</a>. See <a href="https://github.com/marchof/three4j">the project page</a>
+ * for more documentation and updates.
+ */
 module com.mountainminds.three4j {
 	exports com.mountainminds.three4j;
 
