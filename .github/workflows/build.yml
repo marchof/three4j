@@ -17,4 +17,4 @@ jobs:
         java-version: 11
         distribution: adopt
     - name: Build with Maven
-      run: mvn -B clean verify
+      run: mvn -B clean verify -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn

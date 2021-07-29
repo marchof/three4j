@@ -100,6 +100,7 @@
 						<configuration>
 							<header>${project.name}</header>
 							<failOnWarnings>true</failOnWarnings>
+							<quiet>true</quiet>
 						</configuration>
 					</execution>
 				</executions>
