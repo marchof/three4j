@@ -18,6 +18,8 @@ import javax.crypto.SecretKey;
 /**
  * Subclass of {@link Blob} which adds the meta information for a specific
  * upload (blob id and encrypted file size).
+ * 
+ * @see Blob#uploaded(BlobId, int)
  */
 public class UploadedBlob extends Blob {
 
@@ -30,10 +32,20 @@ public class UploadedBlob extends Blob {
 		this.size = size;
 	}
 
+	/**
+	 * Returns the ID of the uploaded blob
+	 * 
+	 * @return ID
+	 */
 	public BlobId getId() {
 		return id;
 	}
 
+	/**
+	 * Returns the size in bytes of the uploaded blob
+	 * 
+	 * @return size in bytes
+	 */
 	public int getSize() {
 		return size;
 	}

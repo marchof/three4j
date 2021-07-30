@@ -99,7 +99,7 @@ public final class KeyEncoder {
 	 * @param publicKey public key
 	 * @return QR code text
 	 */
-	public String qrcode(ThreemaID threemaid, PublicKey publicKey) {
+	public String qrcode(ThreemaId threemaid, PublicKey publicKey) {
 		return String.format("3mid:%s,%s", threemaid.getValue(), encode(publicKey));
 	}
 

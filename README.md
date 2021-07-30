@@ -60,7 +60,7 @@ To use the gateway API client you need a gateway Threema ID and the
 corresponding secret which was issued by the gateway admin interface:
 
 ```java
-ThreemaID from = ThreemaID.of("*YOURGWY"); // Insert your ID here
+ThreemaId from = ThreemaId.of("*YOURGWY"); // Insert your ID here
 String secret = // e.g. "JSH5y9DfvOROm2Iw", retrieve this from a secure location
 ```
 
@@ -89,7 +89,7 @@ be queried to lookup their Threema ID. Note that we do not disclose
 the actual data but only send hash values:
 
 ```java
-ThreemaID receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
+ThreemaId receiverId = gw.getIdByPhoneNumber(Hash.ofPhone("+41791234567"));
 System.out.println(receiverId);
 ```
 
@@ -163,11 +163,10 @@ Files.write(Path.of("target/download.jpg"), downloadedImage);
 
 ### Encrypted File Messages
 
-Like images we can encrypt and send arbitrary files. But unlike
-images files are encrypted with a random key which is then
-transmitted the with the corresponding message. Also for files an
-optional preview image can be added which must be encrypted with the
-same key than the file. The Three4J API makes this process simple:
+We can encrypt and send arbitrary files. Files are encrypted with a
+random key which is then transmitted with the corresponding message.
+An optional preview image can be added which must be encrypted with
+the same key than the file:
 
 ```java
 byte[] file = Files.readAllBytes(Path.of("src/test/resources/document.pdf"));
@@ -198,7 +197,7 @@ is managed for you on the gateway server. Please rather consider
 using end-to-end encryption as described above.
 
 ```java
-gw.sendSimpleMessage(ThreemaID.of("ABCDEFGH"), "Not so secret message.");
+gw.sendSimpleMessage(ThreemaId.of("ABCDEFGH"), "Not so secret message.");
 ```
 
 Alternatively you can also use a international telephone number or a
