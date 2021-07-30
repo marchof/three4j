@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mountainminds</groupId>
 	<artifactId>three4j</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>Three4J - Threema Client API for Java</name>
 	<description>Client API for Threema Messanger</description>
