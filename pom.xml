@@ -4,10 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mountainminds</groupId>
 	<artifactId>three4j</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>Three4J - Threema Client API for Java</name>
 	<description>Client API for Threema Messanger</description>
+	<url>https://github.com/marchof/three4j</url>
 	<inceptionYear>2021</inceptionYear>
 	<organization>
 		<name>Mountainminds GmbH Co. KG</name>
@@ -17,8 +18,27 @@
 		<license>
 			<name>MIT</name>
 			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<id>mtnminds</id>
+			<name>Marc R. Hoffmann</name>
+			<email>hoffmann@mountainminds.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/marchof/three4j.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:marchof/three4j.git</developerConnection>
+		<url>https://github.com/marchof/three4j</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/marchof/three4j/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,6 +91,18 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
 			</plugin>
@@ -99,6 +131,7 @@
 						</goals>
 						<configuration>
 							<header>${project.name}</header>
+							<footer>Version ${project.version}</footer>
 							<failOnWarnings>true</failOnWarnings>
 							<quiet>true</quiet>
 						</configuration>
