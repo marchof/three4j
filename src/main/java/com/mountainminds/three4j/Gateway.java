@@ -325,7 +325,7 @@ public final class Gateway {
 	public MessageId sendMessage(ThreemaId toThreemid, EncryptedMessage msg) throws GatewayException, IOException {
 		var body = auth() //
 				.add("to", toThreemid.getValue()) //
-				.add("box", msg.getHexContent()) //
+				.add("box", msg.getHexValue()) //
 				.add("nonce", msg.getNonce().getHexValue()).toBody();
 		var request = gwRequest("send_e2e") //
 				.header("Content-Type", "application/x-www-form-urlencoded") //

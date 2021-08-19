@@ -38,7 +38,7 @@
  * </p>
  *
  * <p>
- * Binary content like images od files are transmitted separately as a
+ * Binary content like images or files are transmitted separately as a
  * {@link com.mountainminds.three4j.Blob}.
  * </p>
  * 

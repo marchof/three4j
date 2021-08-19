@@ -45,7 +45,7 @@ public final class Nonce extends ByteArrayValue {
 	 * @return new message id
 	 */
 	public static Nonce of(String hexvalue) {
-		return of(KeyEncoder.fromHex(hexvalue));
+		return of(fromHex(hexvalue));
 	}
 
 	/**
