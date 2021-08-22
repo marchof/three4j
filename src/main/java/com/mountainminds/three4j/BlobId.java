@@ -43,7 +43,7 @@ public final class BlobId extends ByteArrayValue {
 	 * @return new blob id
 	 */
 	public static BlobId of(String hexvalue) {
-		return of(KeyEncoder.fromHex(hexvalue));
+		return of(fromHex(hexvalue));
 	}
 
 	static BlobId read(InputStream in) throws IOException {

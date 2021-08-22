@@ -37,7 +37,7 @@ public final class KeyEncoder {
 	 * @return 64 digits hex string
 	 */
 	public static String encode(PublicKey key) {
-		return toHex(reverse(((XECPublicKey) key).getU().toByteArray()));
+		return ByteArrayValue.toHex(reverse(((XECPublicKey) key).getU().toByteArray()));
 	}
 
 	/**
@@ -47,7 +47,7 @@ public final class KeyEncoder {
 	 * @return 64 digits hex string
 	 */
 	public static String encode(PrivateKey key) {
-		return toHex(((XECPrivateKey) key).getScalar().get());
+		return ByteArrayValue.toHex(((XECPrivateKey) key).getScalar().get());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class KeyEncoder {
 	 * @return 64 digits hex string
 	 */
 	public static String encode(SecretKey key) {
-		return toHex(key.getEncoded());
+		return ByteArrayValue.toHex(key.getEncoded());
 	}
 
 	/**
@@ -68,7 +68,7 @@ public final class KeyEncoder {
 	 * @return public key
 	 */
 	public static PublicKey decodePublicKey(String hex) {
-		return CryptoBox.publicKey(fromHex(hex));
+		return CryptoBox.publicKey(ByteArrayValue.fromHex(hex));
 	}
 
 	/**
@@ -78,7 +78,7 @@ public final class KeyEncoder {
 	 * @return private key
 	 */
 	public static PrivateKey decodePrivateKey(String hex) {
-		return CryptoBox.privateKey(fromHex(hex));
+		return CryptoBox.privateKey(ByteArrayValue.fromHex(hex));
 	}
 
 	/**
@@ -88,7 +88,7 @@ public final class KeyEncoder {
 	 * @return secret key
 	 */
 	public static SecretKey decodeSecretKey(String hex) {
-		return SecretBox.key(fromHex(hex));
+		return SecretBox.key(ByteArrayValue.fromHex(hex));
 	}
 
 	/**
@@ -101,37 +101,6 @@ public final class KeyEncoder {
 	 */
 	public String qrcode(ThreemaId threemaid, PublicKey publicKey) {
 		return String.format("3mid:%s,%s", threemaid.getValue(), encode(publicKey));
-	}
-
-	/**
-	 * Converts a byte array into its hex representation
-	 * 
-	 * @param bytes byte array of arbitrary size
-	 * @return hex string (twice as many digits as bytes)
-	 */
-	static String toHex(byte[] bytes) {
-		var sb = new StringBuilder();
-		for (var b : bytes) {
-			sb.append(Character.forDigit((b & 0xff) >> 4, 16));
-			sb.append(Character.forDigit(b & 0xf, 16));
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * Converts a hex string into a byte array.
-	 * 
-	 * @param hex hex string
-	 * @return byte array (half the size than hex digits)
-	 */
-	static byte[] fromHex(String hex) {
-		var bytes = new byte[hex.length() / 2];
-		for (int i = 0; i < bytes.length; i++) {
-			var d1 = Character.digit(hex.charAt(2 * i), 16);
-			var d2 = Character.digit(hex.charAt(2 * i + 1), 16);
-			bytes[i] = (byte) ((d1 << 4) | d2);
-		}
-		return bytes;
 	}
 
 	private static byte[] reverse(byte[] array) {

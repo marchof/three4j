@@ -13,7 +13,6 @@
  *******************************************************************************/
 package com.mountainminds.three4j;
 
-import static com.mountainminds.three4j.KeyEncoder.fromHex;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import java.security.GeneralSecurityException;
@@ -45,7 +44,7 @@ public final class Hash extends ByteArrayValue {
 	}
 
 	static Hash of(String hex) {
-		return new Hash(KeyEncoder.fromHex(hex));
+		return new Hash(fromHex(hex));
 	}
 
 	private static Hash of(String input, byte[] key) {

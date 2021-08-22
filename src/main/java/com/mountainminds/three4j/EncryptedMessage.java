@@ -22,24 +22,22 @@ import software.pando.crypto.nacl.CryptoBox;
  * An encrypted Threema message with its encrypted content and the corresponding
  * nonce.
  */
-public final class EncryptedMessage {
+public final class EncryptedMessage extends ByteArrayValue {
 
 	public static final int MAX_CONTENT_LENGTH = 4000;
 
-	private byte[] content;
 	private Nonce nonce;
 
 	/**
-	 * @param content encrypted binary content up to 4000 bytes
-	 * @param nonce   24 byte nonce used for encryption
-	 * @throws IllegalArgumentException if the required byte length do not match the
-	 *                                  specifications
+	 * @param value encrypted binary content up to 4000 bytes
+	 * @param nonce nonce used for encryption
+	 * @throws IllegalArgumentException if value length exceeds the maximum length
 	 */
-	public EncryptedMessage(byte[] content, Nonce nonce) throws IllegalArgumentException {
-		if (content.length > MAX_CONTENT_LENGTH) {
-			throw new IllegalArgumentException("Content too large: " + content.length);
+	public EncryptedMessage(byte[] value, Nonce nonce) throws IllegalArgumentException {
+		super(value);
+		if (value.length > MAX_CONTENT_LENGTH) {
+			throw new IllegalArgumentException("Content too large: " + value.length);
 		}
-		this.content = content;
 		this.nonce = nonce;
 	}
 
@@ -50,21 +48,7 @@ public final class EncryptedMessage {
 	 *                                  specifications
 	 */
 	public EncryptedMessage(String hexContent, Nonce nonce) throws IllegalArgumentException {
-		this(KeyEncoder.fromHex(hexContent), nonce);
-	}
-
-	/**
-	 * @return encrypted content
-	 */
-	public byte[] getContent() {
-		return content;
-	}
-
-	/**
-	 * @return hex encoded content
-	 */
-	public String getHexContent() {
-		return KeyEncoder.toHex(content);
+		this(fromHex(hexContent), nonce);
 	}
 
 	/**
@@ -83,7 +67,7 @@ public final class EncryptedMessage {
 	 * @see PlainMessage#getType()
 	 */
 	public PlainMessage decrypt(PublicKey sender, PrivateKey receiver) {
-		var box = CryptoBox.fromCombined(nonce.getValue(), content);
+		var box = CryptoBox.fromCombined(nonce.getValue(), getValue());
 		return PlainMessage.decode(box.decrypt(receiver, sender));
 	}
 

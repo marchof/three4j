@@ -43,7 +43,7 @@ public final class MessageId extends ByteArrayValue {
 	 * @return new message id
 	 */
 	public static MessageId of(String hexvalue) {
-		return of(KeyEncoder.fromHex(hexvalue));
+		return of(fromHex(hexvalue));
 	}
 
 	static MessageId read(InputStream in) throws IOException {

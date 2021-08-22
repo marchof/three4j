@@ -90,4 +90,16 @@ public class ByteArrayValueTest {
 		assertEquals("Subject[0a123456]", s.toString());
 	}
 
+	@Test
+	public void toHex_should_encode_byte_array() {
+		var content = new byte[] { (byte) 0x00, (byte) 0xff, (byte) 0x83 };
+		assertEquals("00ff83", ByteArrayValue.toHex(content));
+	}
+
+	@Test
+	public void fromHex_should_decode_hex_string() {
+		var expected = new byte[] { (byte) 0x00, (byte) 0xb5, (byte) 0xff };
+		assertArrayEquals(expected, ByteArrayValue.fromHex("00b5ff"));
+	}
+
 }

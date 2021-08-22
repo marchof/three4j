@@ -119,7 +119,7 @@ public class EncryptionDecryptionTest {
 	public void decryption_should_fail_when_the_message_is_altered() {
 		var msg = new Text("secret123");
 		var encrypted = msg.encrypt(alice.getPrivate(), bob.getPublic());
-		var content = encrypted.getContent();
+		var content = encrypted.getValue();
 		content[8] = (byte) (content[8] ^ 0xff);
 		new EncryptedMessage(content, encrypted.getNonce());
 

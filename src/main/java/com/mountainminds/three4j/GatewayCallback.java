@@ -52,7 +52,7 @@ public class GatewayCallback {
 				.map(params::get) //
 				.map(s -> s.getBytes(ENCODING)) //
 				.forEach(m::update);
-		if (!KeyEncoder.toHex(m.doFinal()).equals(params.get("mac"))) {
+		if (!ByteArrayValue.toHex(m.doFinal()).equals(params.get("mac"))) {
 			throw new IllegalArgumentException("Invalid signature");
 		}
 
