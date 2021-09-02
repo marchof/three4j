@@ -219,6 +219,21 @@ You can query the remaining credits via API:
 System.out.println("Remaining credits: " + gw.getRemainingCredits());
 ```
 
+### Threema QR Code
+
+To establich trust with your users you can create a QR code with your
+Threema ID and your public key. When the user scans that QR code your
+gateway ID will show "green" in their contact list. The `qrcode()`
+method creates the text content which need to be converted to a QR
+graphic with a library of your choice (e.g.
+[zxing](https://github.com/zxing/zxing)).
+
+```java
+PublicKey publicKey = KeyEncoder.getPublicKey(privateKey);
+String qrtext = KeyEncoder.qrcode(threemaid, publicKey);
+System.out.println(qrtext);
+```
+
 ### Callback Handling
 
 You can configure your own HTTP server to receive messages from the
