@@ -13,10 +13,15 @@
  *******************************************************************************/
 package com.mountainminds.three4j;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.interfaces.XECPrivateKey;
 import java.security.interfaces.XECPublicKey;
+import java.security.spec.NamedParameterSpec;
 
 import javax.crypto.SecretKey;
 
@@ -28,7 +33,7 @@ import software.pando.crypto.nacl.SecretBox;
  */
 public final class KeyEncoder {
 
-	// === key encoding/decoding
+	private static final String KEY_ALGORITHM = "X25519";
 
 	/**
 	 * Encodes a public Threema key.
@@ -47,7 +52,7 @@ public final class KeyEncoder {
 	 * @return 64 digits hex string
 	 */
 	public static String encode(PrivateKey key) {
-		return ByteArrayValue.toHex(((XECPrivateKey) key).getScalar().get());
+		return ByteArrayValue.toHex(getBytes(key));
 	}
 
 	/**
@@ -92,6 +97,30 @@ public final class KeyEncoder {
 	}
 
 	/**
+	 * Derives the corresponding public key from the given private key.
+	 * 
+	 * @param privateKey private key
+	 * @return corresponding public key
+	 */
+	public static PublicKey getPublicKey(PrivateKey privateKey) {
+		var keyBytes = getBytes(privateKey);
+		@SuppressWarnings("serial")
+		var notrandom = new SecureRandom() {
+			@Override
+			public void nextBytes(byte[] bytes) {
+				System.arraycopy(keyBytes, 0, bytes, 0, keyBytes.length);
+			}
+		};
+		try {
+			var generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+			generator.initialize(new NamedParameterSpec(KEY_ALGORITHM), notrandom);
+			return generator.generateKeyPair().getPublic();
+		} catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * Creates the QR code text to exchange Threema ids. This can be used for
 	 * example for gateway ids to establish a direct trust relationship with users.
 	 * 
@@ -109,6 +138,10 @@ public final class KeyEncoder {
 			reversed[i] = array[j];
 		}
 		return reversed;
+	}
+
+	private static byte[] getBytes(PrivateKey privateKey) {
+		return ((XECPrivateKey) privateKey).getScalar().get();
 	}
 
 	private KeyEncoder() {
