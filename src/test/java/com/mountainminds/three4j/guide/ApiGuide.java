@@ -80,6 +80,7 @@ public class ApiGuide {
 		ThreemaId receiverId = lookups(gw);
 		sendtextmessage(gw, myPrivateKey, receiverId);
 		simplemessage(gw);
+		threemaidqrcode(from, myPrivateKey);
 
 		callbackserver(gw, secret, myPrivateKey);
 
@@ -248,6 +249,24 @@ public class ApiGuide {
 
 		// <CODE>
 		System.out.println("Remaining credits: " + gw.getRemainingCredits());
+		// </CODE>
+
+	}
+
+	private static void threemaidqrcode(ThreemaId threemaid, PrivateKey privateKey) {
+		// ### Threema QR Code
+		//
+		// To establich trust with your users you can create a QR code with your
+		// Threema ID and your public key. When the user scans that QR code your
+		// gateway ID will show "green" in their contact list. The `qrcode()`
+		// method creates the text content which need to be converted to a QR
+		// graphic with a library of your choice (e.g.
+		// [zxing](https://github.com/zxing/zxing)).
+
+		// <CODE>
+		PublicKey publicKey = KeyEncoder.getPublicKey(privateKey);
+		String qrtext = KeyEncoder.qrcode(threemaid, publicKey);
+		System.out.println(qrtext);
 		// </CODE>
 
 	}

@@ -26,4 +26,12 @@ public class KeyEncoderTest {
 		assertEquals(pair.getPublic(), publicKey);
 	}
 
+	@Test
+	public void qrcode_should_create_threema_qr_code() {
+		var threemaid = ThreemaId.of("*GWYTEST");
+		var publicKey = KeyEncoder.decodePublicKey("1234567812345678123456781234567812345678123456781234567812345678");
+		var qr = KeyEncoder.qrcode(threemaid, publicKey);
+		assertEquals("3mid:*GWYTEST,1234567812345678123456781234567812345678123456781234567812345678", qr);
+	}
+
 }
