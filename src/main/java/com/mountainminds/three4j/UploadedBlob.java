@@ -23,8 +23,8 @@ import javax.crypto.SecretKey;
  */
 public class UploadedBlob extends Blob {
 
-	private BlobId id;
-	private int size;
+	private final BlobId id;
+	private final int size;
 
 	UploadedBlob(SecretKey key, Nonce nonce, BlobId id, int size) {
 		super(key, nonce);

@@ -33,7 +33,7 @@ public class GatewayException extends IOException {
 
 	private static final long serialVersionUID = 1L;
 
-	private int status;
+	private final int status;
 
 	/**
 	 * New exception with the given status and message.

@@ -75,6 +75,7 @@ final class HttpSupport {
 	 */
 	static byte[] blobBody(byte[] blob) {
 		try (var out = new ByteArrayOutputStream(); var printer = new PrintWriter(out, true, US_ASCII) {
+			@Override
 			public void println() {
 				// Ensure CRLF line endings on every platform
 				write('\r');
@@ -100,7 +101,7 @@ final class HttpSupport {
 	 */
 	static class UrlParams {
 
-		private StringBuilder buffer = new StringBuilder();
+		private final StringBuilder buffer = new StringBuilder();
 
 		UrlParams add(String key, String value) {
 			if (buffer.length() > 0) {

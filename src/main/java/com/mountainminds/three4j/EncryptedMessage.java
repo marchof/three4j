@@ -26,7 +26,7 @@ public final class EncryptedMessage extends ByteArrayValue {
 
 	public static final int MAX_CONTENT_LENGTH = 4000;
 
-	private Nonce nonce;
+	private final Nonce nonce;
 
 	/**
 	 * @param value encrypted binary content up to 4000 bytes

@@ -33,8 +33,8 @@ public class GatewayCallback {
 	private final ThreemaId to;
 	private final MessageId messageId;
 	private final Instant date;
-	private EncryptedMessage message;
-	private String nickname; // public nickname of the sender, if set
+	private final EncryptedMessage message;
+	private final String nickname;
 
 	/**
 	 * Decodes and verifies a callback HTTP body.
