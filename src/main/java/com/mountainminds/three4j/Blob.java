@@ -31,8 +31,8 @@ public class Blob {
 	private static final Nonce FILE_NONCE = Nonce.of("000000000000000000000000000000000000000000000001");
 	private static final Nonce THUMBNAIL_NONCE = Nonce.of("000000000000000000000000000000000000000000000002");
 
-	private SecretKey key;
-	private Nonce nonce;
+	private final SecretKey key;
+	private final Nonce nonce;
 
 	Blob(SecretKey key, Nonce nonce) {
 		this.key = key;

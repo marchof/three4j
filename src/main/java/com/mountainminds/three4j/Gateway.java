@@ -148,8 +148,8 @@ public final class Gateway {
 	 */
 	public static class IDKey {
 
-		private ThreemaId id;
-		private PublicKey key;
+		private final ThreemaId id;
+		private final PublicKey key;
 
 		IDKey(String id, String key) {
 			this.id = ThreemaId.of(id);
