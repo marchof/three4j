@@ -186,10 +186,7 @@ public abstract class PlainMessage {
 
 		@Override
 		public String toString() {
-			StringBuffer sb = new StringBuffer("File[");
-			sb.append(", ").append(size);
-			sb.append("]");
-			return sb.toString();
+			return "Image[" + blobId.getHexValue() + "]";
 		}
 
 	}
@@ -310,16 +307,10 @@ public abstract class PlainMessage {
 
 		@Override
 		public String toString() {
-			StringBuffer sb = new StringBuffer("File[");
-			sb.append(file.getId());
-			if (thumbnail != null) {
-				sb.append(", ").append(thumbnail.getId());
-			}
+			var sb = new StringBuffer("File[");
+			sb.append(file.getId().getHexValue());
 			sb.append(", ").append(mimetype);
-			if (description != null) {
-				sb.append(", ").append(description);
-			}
-			sb.append("]");
+			sb.append(", ").append(renderingType).append("]");
 			return sb.toString();
 		}
 	}
@@ -382,10 +373,10 @@ public abstract class PlainMessage {
 
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder("DeliveryReceipt[");
+			var sb = new StringBuilder("DeliveryReceipt[");
 			sb.append(receiptType);
-			for (MessageId id : messageIds) {
-				sb.append(", ").append(id);
+			for (var id : messageIds) {
+				sb.append(", ").append(id.getHexValue());
 			}
 			sb.append("]");
 			return sb.toString();
