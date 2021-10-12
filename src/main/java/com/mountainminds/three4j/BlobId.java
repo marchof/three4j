@@ -13,9 +13,6 @@
  *******************************************************************************/
 package com.mountainminds.three4j;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * A 16 byte identifier for uploaded blobs.
  */
@@ -44,11 +41,6 @@ public final class BlobId extends ByteArrayValue {
 	 */
 	public static BlobId of(String hexvalue) {
 		return of(fromHex(hexvalue));
-	}
-
-	static BlobId read(InputStream in) throws IOException {
-		var id = in.readNBytes(SIZE);
-		return id.length == SIZE ? of(id) : null;
 	}
 
 }

@@ -13,9 +13,6 @@
  *******************************************************************************/
 package com.mountainminds.three4j;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import software.pando.crypto.nacl.Bytes;
 
 /**
@@ -53,11 +50,6 @@ public final class Nonce extends ByteArrayValue {
 	 */
 	public static Nonce random() {
 		return of(Bytes.secureRandom(SIZE));
-	}
-
-	static Nonce read(InputStream in) throws IOException {
-		var id = in.readNBytes(SIZE);
-		return id.length == SIZE ? of(id) : null;
 	}
 
 }

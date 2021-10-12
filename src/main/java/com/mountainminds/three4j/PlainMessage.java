@@ -145,9 +145,9 @@ public abstract class PlainMessage {
 		private final Nonce nonce;
 
 		private Image(DataInputStream in) throws IOException {
-			blobId = BlobId.read(in);
+			blobId = BlobId.of(in.readNBytes(BlobId.SIZE));
 			size = in.readInt();
-			nonce = Nonce.read(in);
+			nonce = Nonce.of(in.readNBytes(Nonce.SIZE));
 		}
 
 		public Image(UploadedBlob blob) throws IllegalArgumentException {
