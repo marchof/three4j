@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -80,6 +80,21 @@ public class HttpSupportTest {
 	@Test
 	public void decodeUrlParams_should_decode_params() {
 		assertEquals(Map.of("a", "123", "b", "Hello World!"), decodeUrlParams("a=123&b=Hello+World%21"));
+	}
+
+	@Test
+	public void decodeUrlParams_should_handle_empty_string() {
+		assertEquals(Map.of(), decodeUrlParams(""));
+	}
+
+	@Test
+	public void decodeUrlParams_should_handle_invalid_input1() {
+		assertEquals(Map.of(), decodeUrlParams("justthis"));
+	}
+
+	@Test
+	public void decodeUrlParams_should_handle_invalid_input2() {
+		assertEquals(Map.of("a", "123"), decodeUrlParams("a=123&justthis"));
 	}
 
 }

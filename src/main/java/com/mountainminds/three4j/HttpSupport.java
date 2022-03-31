@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -132,6 +132,7 @@ final class HttpSupport {
 	static Map<String, String> decodeUrlParams(String paramstr) {
 		return Arrays.stream(paramstr.split("&")) //
 				.map(s -> s.split("=")) //
+				.filter(array -> array.length == 2) //
 				.collect(Collectors.toMap(k -> URLDecoder.decode(k[0], US_ASCII),
 						v -> URLDecoder.decode(v[1], US_ASCII)));
 	}

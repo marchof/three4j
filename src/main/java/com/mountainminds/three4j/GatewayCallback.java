@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -19,6 +19,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -49,10 +50,10 @@ public class GatewayCallback {
 
 		var m = newMAC(secret.getBytes(ENCODING));
 		Stream.of("from", "to", "messageId", "date", "nonce", "box") //
-				.map(params::get) //
+				.map(key -> getMandatoryValue(params, key)) //
 				.map(s -> s.getBytes(ENCODING)) //
 				.forEach(m::update);
-		if (!ByteArrayValue.toHex(m.doFinal()).equals(params.get("mac"))) {
+		if (!ByteArrayValue.toHex(m.doFinal()).equals(getMandatoryValue(params, "mac"))) {
 			throw new IllegalArgumentException("Invalid signature");
 		}
 
@@ -62,6 +63,14 @@ public class GatewayCallback {
 		date = Instant.ofEpochSecond(Long.parseLong(params.get("date")));
 		message = new EncryptedMessage(params.get("box"), Nonce.of(params.get("nonce")));
 		nickname = params.get("nickname");
+	}
+
+	private static String getMandatoryValue(Map<String, String> params, String key) {
+		var value = params.get(key);
+		if (value == null) {
+			throw new IllegalArgumentException("Missing parameter " + key);
+		}
+		return value;
 	}
 
 	/**
