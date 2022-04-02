@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,6 +25,7 @@
  * 
  * <ul>
  * <li>{@link PlainMessage.Text}</li>
+ * <li>{@link PlainMessage.Location}</li>
  * <li>{@link PlainMessage.Image}</li>
  * <li>{@link PlainMessage.File}</li>
  * <li>{@link PlainMessage.DeliveryReceipt}</li>
@@ -44,7 +45,7 @@
  * 
  * <p>
  * For type safety the API uses specific wrapper types instead of
- * <code>byte[]</code> of <code>String</code> values:
+ * <code>byte[]</code> or <code>String</code> values:
  * </p>
  * 
  * <ul>

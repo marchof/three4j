@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -27,6 +27,7 @@ import com.mountainminds.three4j.PlainMessage.DeliveryReceipt;
 import com.mountainminds.three4j.PlainMessage.DeliveryReceipt.ReceiptType;
 import com.mountainminds.three4j.PlainMessage.File;
 import com.mountainminds.three4j.PlainMessage.Image;
+import com.mountainminds.three4j.PlainMessage.Location;
 import com.mountainminds.three4j.PlainMessage.Text;
 
 import software.pando.crypto.nacl.CryptoBox;
@@ -50,6 +51,21 @@ public class EncryptionDecryptionTest {
 		var decrypted = (Text) encrypted.decrypt(alice.getPublic(), bob.getPrivate());
 
 		assertEquals("secret123", decrypted.getText());
+	}
+
+	@Test
+	public void should_encrypt_and_decrypt_location_messages() {
+		var msg = new Location(46.947, 7.444, 40.0);
+		msg.setNameAndAddress("Bundeshaus", "Bern");
+
+		var encrypted = msg.encrypt(alice.getPrivate(), bob.getPublic());
+		var decrypted = (Location) encrypted.decrypt(alice.getPublic(), bob.getPrivate());
+
+		assertEquals(46.947, decrypted.getLatitude());
+		assertEquals(7.444, decrypted.getLongitude());
+		assertEquals(40.0, decrypted.getAccuracy());
+		assertEquals("Bundeshaus", decrypted.getName());
+		assertEquals("Bern", decrypted.getAddress());
 	}
 
 	@Test
