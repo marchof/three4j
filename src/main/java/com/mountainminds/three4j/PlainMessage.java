@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2022 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -21,7 +21,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public abstract class PlainMessage {
 
 	/**
 	 * @return code of the specific message type: {@link Text#TYPE},
-	 *         {@link Image#TYPE}, {@link File#TYPE} oder
+	 *         {@link Location#TYPE}, {@link Image#TYPE}, {@link File#TYPE} or
 	 *         {@link DeliveryReceipt#TYPE}
 	 */
 	public abstract int getType();
@@ -82,6 +81,8 @@ public abstract class PlainMessage {
 			switch (type) {
 			case Text.TYPE:
 				return new Text(in);
+			case Location.TYPE:
+				return new Location(in);
 			case Image.TYPE:
 				return new Image(in);
 			case File.TYPE:
@@ -105,7 +106,7 @@ public abstract class PlainMessage {
 		private final String text;
 
 		private Text(DataInputStream in) throws IOException {
-			text = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+			text = new String(in.readAllBytes(), UTF_8);
 		}
 
 		public Text(String text) {
@@ -123,12 +124,120 @@ public abstract class PlainMessage {
 
 		@Override
 		void encode(DataOutputStream out) throws IOException {
-			out.write(text.getBytes(StandardCharsets.UTF_8));
+			out.write(text.getBytes(UTF_8));
 		}
 
 		@Override
 		public String toString() {
 			return "Text[" + text + "]";
+		}
+
+	}
+
+	/**
+	 * Location message.
+	 */
+	public final static class Location extends PlainMessage {
+
+		public static final int TYPE = 0x10;
+
+		private final double latitude;
+		private final double longitude;
+		private final double accuracy;
+
+		private String name;
+		private String address;
+
+		Location(DataInputStream in) throws IOException {
+			var lines = new String(in.readAllBytes(), UTF_8).split("\n");
+			var parts = lines[0].split(",");
+			this.latitude = Double.parseDouble(parts[0]);
+			this.longitude = Double.parseDouble(parts[1]);
+			this.accuracy = parts.length == 3 ? Double.parseDouble(parts[2]) : Double.NaN;
+			if (lines.length == 2) {
+				this.address = lines[1];
+			}
+			if (lines.length == 3) {
+				this.name = lines[1];
+				this.address = lines[2];
+			}
+
+		}
+
+		public Location(double latitude, double longitude, double accuracy) {
+			this.latitude = latitude;
+			this.longitude = longitude;
+			this.accuracy = accuracy;
+		}
+
+		public Location(double latitude, double longitude) {
+			this(latitude, longitude, Double.NaN);
+		}
+
+		public double getLatitude() {
+			return latitude;
+		}
+
+		public double getLongitude() {
+			return longitude;
+		}
+
+		/**
+		 * @return accuracy in meters or {@link Double#NaN} if undefined
+		 */
+		public double getAccuracy() {
+			return accuracy;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getAddress() {
+			return address;
+		}
+
+		public void setAddress(String address) {
+			setNameAndAddress(null, address);
+		}
+
+		public void setNameAndAddress(String name, String address) {
+			this.name = name;
+			this.address = address;
+		}
+
+		@Override
+		public int getType() {
+			return TYPE;
+		}
+
+		@Override
+		void encode(DataOutputStream out) throws IOException {
+			var str = new StringBuilder();
+			str.append(latitude).append(',').append(longitude);
+			if (!Double.isNaN(accuracy)) {
+				str.append(',').append(accuracy);
+			}
+			if (name != null) {
+				str.append('\n').append(name);
+			}
+			if (address != null) {
+				str.append('\n').append(address);
+			}
+			out.write(str.toString().getBytes(UTF_8));
+		}
+
+		@Override
+		public String toString() {
+			var str = new StringBuilder("Location[");
+			str.append(latitude).append(' ').append(longitude);
+			if (name != null) {
+				str.append(", ").append(name);
+			}
+			if (address != null) {
+				str.append(", ").append(address);
+			}
+			return str.append(']').toString();
 		}
 
 	}

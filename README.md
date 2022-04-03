@@ -11,6 +11,7 @@ and [Salty Coffee](https://github.com/NeilMadden/salty-coffee) for NaCl encrypti
 The following resources have been used to implement this API:
 
 * [Threema Message API](https://gateway.threema.ch/en/developer/api)
+* [Threema E2E Message Formats](https://gateway.threema.ch/en/developer/e2e)
 * [Cryptography Whitepaper](https://threema.ch/press-files/2_documentation/cryptography_whitepaper.pdf)
 * [Threema Encryption Validation](https://threema.ch/validation/)
 
