@@ -23,4 +23,6 @@ module com.mountainminds.three4j {
 	requires software.pando.crypto.nacl;
 	requires com.google.gson;
 	requires java.net.http;
+	
+	opens com.mountainminds.three4j to com.google.gson;
 }
