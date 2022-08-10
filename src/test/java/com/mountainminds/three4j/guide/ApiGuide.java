@@ -91,7 +91,7 @@ public class ApiGuide {
 		// ### Lookups
 		//
 		// Sending a Threema message requires you to know the eight character
-		// long Threema ID of the receiver. Users my choose to register their
+		// long Threema ID of the receiver. Users may choose to register their
 		// telephone number or email address with their account which can then
 		// be queried to lookup their Threema ID. Note that we do not disclose
 		// the actual data but only send hash values:
