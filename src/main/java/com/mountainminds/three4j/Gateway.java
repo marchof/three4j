@@ -23,6 +23,8 @@ import static com.mountainminds.three4j.HttpSupport.MULTIPART_BOUNDARY;
 import static com.mountainminds.three4j.HttpSupport.UNKNOWN_RESPONSE;
 import static com.mountainminds.three4j.HttpSupport.blobBody;
 import static java.util.Arrays.stream;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -230,7 +233,18 @@ public final class Gateway {
 	 * Currently known capabilities.
 	 */
 	public static enum Capability {
-		text, image, video, audio, file
+
+		text, image, video, audio, group, ballot, file, call, videocall, pfs, groupcall,
+
+		/** Capability not known by this Threema client implementation */
+		unknown;
+
+		private static final Map<String, Capability> BY_NAME = //
+				Arrays.stream(values()).collect(toMap(Enum::name, identity()));
+
+		static Capability of(String name) {
+			return BY_NAME.getOrDefault(name, unknown);
+		}
 	}
 
 	/**
@@ -245,7 +259,7 @@ public final class Gateway {
 		var request = gwRequest(auth(), "capabilities", threemaid.getValue()).build();
 		var result = send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_NOTFOUND, () -> "No matching ID for " + threemaid));
-		return stream(result.split(",")).map(Capability::valueOf).collect(toSet());
+		return stream(result.split(",")).map(Capability::of).collect(toSet());
 	}
 
 	/**
