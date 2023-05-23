@@ -26,6 +26,7 @@ public class GatewayException extends IOException {
 	public static int STATUS_BADREQUEST = 400;
 	public static int STATUS_UNAUTHORIZED = 401;
 	public static int STATUS_PAYMENTREQUIRED = 402;
+	public static int STATUS_FORBIDDEN = 403;
 	public static int STATUS_NOTFOUND = 404;
 	public static int STATUS_PAYLOADTOOLARGE = 413;
 

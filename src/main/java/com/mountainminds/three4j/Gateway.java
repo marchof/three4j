@@ -14,6 +14,7 @@
 package com.mountainminds.three4j;
 
 import static com.mountainminds.three4j.GatewayException.STATUS_BADREQUEST;
+import static com.mountainminds.three4j.GatewayException.STATUS_FORBIDDEN;
 import static com.mountainminds.three4j.GatewayException.STATUS_INTERNALSERVERERROR;
 import static com.mountainminds.three4j.GatewayException.STATUS_NOTFOUND;
 import static com.mountainminds.three4j.GatewayException.STATUS_PAYLOADTOOLARGE;
@@ -52,7 +53,8 @@ public final class Gateway {
 	private static final StatusHandler DEFAULT_STATUS = UNKNOWN_RESPONSE //
 			.ok() //
 			.error(STATUS_UNAUTHORIZED, "API identity or secret incorrect") //
-			.error(STATUS_PAYMENTREQUIRED, "no credits remaining") //
+			.error(STATUS_PAYMENTREQUIRED, "No credits remaining") //
+			.error(STATUS_FORBIDDEN, "Forbidden") //
 			.error(STATUS_INTERNALSERVERERROR, "Temporary internal server error");
 
 	private final ThreemaId from;
