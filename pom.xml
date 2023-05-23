@@ -6,8 +6,8 @@
 	<artifactId>three4j</artifactId>
 	<version>1.4.1-SNAPSHOT</version>
 
-	<name>Three4J - Threema Client API for Java</name>
-	<description>Client API for Threema Messanger</description>
+	<name>Three4J - Threema Gateway Client for Java</name>
+	<description>A Java client library for the Threema Gateway</description>
 	<url>https://github.com/marchof/three4j</url>
 	<inceptionYear>2021</inceptionYear>
 	<organization>
