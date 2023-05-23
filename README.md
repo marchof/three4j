@@ -1,7 +1,7 @@
-Three4J - Threema Client API for Java
-=====================================
+Three4J - Threema Gateway Client for Java
+=========================================
 
-A client API implementation for the [Threema Gateway](https://gateway.threema.ch/)
+A Java client library for the [Threema Gateway](https://gateway.threema.ch/)
 which supports exchanging end-to-end encrypted messages including images and
 arbitrary files. The primary purpose of this implementation is to provide a
 small Maven artifact which can be easily integrated in any Java applications.
@@ -14,6 +14,8 @@ The following resources have been used to implement this API:
 * [Threema E2E Message Formats](https://gateway.threema.ch/en/developer/e2e)
 * [Cryptography Whitepaper](https://threema.ch/press-files/2_documentation/cryptography_whitepaper.pdf)
 * [Threema Encryption Validation](https://threema.ch/validation/)
+
+The API JavaDoc is available [online](https://javadoc.io/doc/com.mountainminds/three4j/).
 
 ## Maven Artifacts
 
