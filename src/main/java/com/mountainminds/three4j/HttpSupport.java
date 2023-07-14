@@ -18,14 +18,15 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -67,33 +68,63 @@ final class HttpSupport {
 		}
 	}
 
-	static final String MULTIPART_BOUNDARY = "xZK2aOVCeCybl1bbgvCEas6n4cdntpzkpcLWA12SahAiBrDrkIBj3W2HMPghi3Bo";
-
 	/**
 	 * Encode binary content as multipart/form-data body according to
 	 * <a href="https://tools.ietf.org/html/rfc2046">RFC 2046</a>.
 	 */
-	static byte[] blobBody(byte[] blob) {
-		try (var out = new ByteArrayOutputStream(); var printer = new PrintWriter(out, true, US_ASCII) {
-			@Override
-			public void println() {
-				// Ensure CRLF line endings on every platform
-				write('\r');
-				write('\n');
-				flush();
-			};
-		}) {
-			printer.println("--" + MULTIPART_BOUNDARY);
-			printer.println("Content-Disposition: form-data;name=\"blob\";filename=\"blob\"");
-			printer.println();
-			out.write(blob);
-			printer.println();
-			printer.println("--" + MULTIPART_BOUNDARY + "--");
-			return out.toByteArray();
-		} catch (IOException e) {
-			// Must not happen with ByteArrayOutputStream
-			throw new RuntimeException(e);
+	static class MultipartEncoder {
+
+		private static ThreadLocal<Random> RANDOM = ThreadLocal.withInitial(SecureRandom::new);
+
+		private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		private static final int LEN = 28;
+
+		private final byte[] content;
+		private final String boundary;
+
+		MultipartEncoder(byte[] content) {
+			this(content, RANDOM.get());
 		}
+
+		MultipartEncoder(byte[] content, Random rand) {
+			this.content = content;
+			this.boundary = createBoundary(rand);
+		}
+
+		private static String createBoundary(Random rand) {
+			return new String(rand.ints(LEN, 0, CHARS.length()).map(CHARS::charAt).toArray(), 0, LEN);
+		}
+
+		String getContentType() {
+			return "multipart/form-data;boundary=" + boundary;
+		}
+
+		byte[] getBody() {
+			try (var out = new ByteArrayOutputStream() {
+				public void println() throws IOException {
+					write('\r');
+					write('\n');
+				};
+
+				public void println(String text) throws IOException {
+					write(text.getBytes(US_ASCII));
+					println();
+				};
+			}) {
+				out.println("--" + boundary);
+				out.println("Content-Disposition: form-data;name=\"blob\";filename=\"blob\"");
+				out.println();
+				out.write(content);
+				out.println();
+				out.println("--" + boundary + "--");
+				return out.toByteArray();
+			} catch (IOException e) {
+				// Must not happen with ByteArrayOutputStream
+				throw new RuntimeException(e);
+			}
+		}
+
 	}
 
 	/**

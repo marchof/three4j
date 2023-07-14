@@ -20,9 +20,7 @@ import static com.mountainminds.three4j.GatewayException.STATUS_NOTFOUND;
 import static com.mountainminds.three4j.GatewayException.STATUS_PAYLOADTOOLARGE;
 import static com.mountainminds.three4j.GatewayException.STATUS_PAYMENTREQUIRED;
 import static com.mountainminds.three4j.GatewayException.STATUS_UNAUTHORIZED;
-import static com.mountainminds.three4j.HttpSupport.MULTIPART_BOUNDARY;
 import static com.mountainminds.three4j.HttpSupport.UNKNOWN_RESPONSE;
-import static com.mountainminds.three4j.HttpSupport.blobBody;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -41,6 +39,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+import com.mountainminds.three4j.HttpSupport.MultipartEncoder;
 import com.mountainminds.three4j.HttpSupport.StatusHandler;
 
 /**
@@ -361,9 +360,10 @@ public final class Gateway {
 	 * @throws IOException      when a technical communication problem occurs
 	 */
 	public BlobId uploadBlob(byte[] encryptedcontent) throws GatewayException, IOException {
+		var encoder = new MultipartEncoder(encryptedcontent);
 		var request = gwRequest(auth(), "upload_blob") //
-				.header("Content-Type", "multipart/form-data;boundary=" + MULTIPART_BOUNDARY) //
-				.POST(BodyPublishers.ofByteArray(blobBody(encryptedcontent))).build();
+				.header("Content-Type", encoder.getContentType()) //
+				.POST(BodyPublishers.ofByteArray(encoder.getBody())).build();
 		return BlobId.of(send(request, BodyHandlers.ofString(), DEFAULT_STATUS //
 				.error(STATUS_BADREQUEST, "required parameters missing or blob empty") //
 				.error(STATUS_PAYLOADTOOLARGE, "blob is too big")));
