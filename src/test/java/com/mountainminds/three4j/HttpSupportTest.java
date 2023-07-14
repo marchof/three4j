@@ -14,7 +14,6 @@
 package com.mountainminds.three4j;
 
 import static com.mountainminds.three4j.HttpSupport.UNKNOWN_RESPONSE;
-import static com.mountainminds.three4j.HttpSupport.blobBody;
 import static com.mountainminds.three4j.HttpSupport.decodeUrlParams;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +24,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.mountainminds.three4j.HttpSupport.MultipartEncoder;
 import com.mountainminds.three4j.HttpSupport.UrlParams;
 
 public class HttpSupportTest {
@@ -61,13 +61,25 @@ public class HttpSupportTest {
 	}
 
 	@Test
-	public void blobBody_should_create_correct_multipart_content() throws IOException {
-		var body = new String(blobBody("<content>".getBytes(US_ASCII)), US_ASCII);
-		assertEquals("--xZK2aOVCeCybl1bbgvCEas6n4cdntpzkpcLWA12SahAiBrDrkIBj3W2HMPghi3Bo\r\n" //
+	public void multipartEncoder_should_create_correct_multipart_content() throws IOException {
+		var encoder = new MultipartEncoder("hello".getBytes(US_ASCII));
+		assertEquals("multipart/form-data;boundary=22Pbd7157KhLr8Ry", encoder.getContentType());
+		assertEquals("--22Pbd7157KhLr8Ry\r\n" //
 				+ "Content-Disposition: form-data;name=\"blob\";filename=\"blob\"\r\n" //
 				+ "\r\n" //
-				+ "<content>\r\n" //
-				+ "--xZK2aOVCeCybl1bbgvCEas6n4cdntpzkpcLWA12SahAiBrDrkIBj3W2HMPghi3Bo--\r\n", body);
+				+ "hello\r\n" //
+				+ "--22Pbd7157KhLr8Ry--\r\n", new String(encoder.getBody(), US_ASCII));
+	}
+
+	@Test
+	public void multipartEncoder_should_extend_boundary_in_case_of_conflicts() throws IOException {
+		var encoder = new MultipartEncoder("hello 22Pbd7157KhLr8Ry8RZmz66!".getBytes(US_ASCII));
+		assertEquals("multipart/form-data;boundary=22Pbd7157KhLr8Ry8RZmz66h", encoder.getContentType());
+		assertEquals("--22Pbd7157KhLr8Ry8RZmz66h\r\n" //
+				+ "Content-Disposition: form-data;name=\"blob\";filename=\"blob\"\r\n" //
+				+ "\r\n" //
+				+ "hello 22Pbd7157KhLr8Ry8RZmz66!\r\n" //
+				+ "--22Pbd7157KhLr8Ry8RZmz66h--\r\n", new String(encoder.getBody(), US_ASCII));
 	}
 
 	@Test
