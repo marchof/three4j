@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Mountainminds GmbH & Co. KG
+ * Copyright (c) 2023 Mountainminds GmbH & Co. KG
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,8 +15,6 @@ package com.mountainminds.three4j;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,7 +28,6 @@ import javax.crypto.SecretKey;
 
 import com.google.gson.Gson;
 
-import software.pando.crypto.nacl.Bytes;
 import software.pando.crypto.nacl.CryptoBox;
 
 /**
@@ -51,15 +48,10 @@ public abstract class PlainMessage {
 	}
 
 	private final byte[] encode() {
-		try (var buffer = new ByteArrayOutputStream(); var out = new DataOutputStream(buffer)) {
-			out.write(getType());
-			encode(out);
-			// add random padding of 1 - 255 bytes (PKCS#7 style)
-			int padding = Math.max(1, 0xFF & Bytes.secureRandom(1)[0]);
-			for (int i = 0; i < padding; i++) {
-				out.write(padding);
-			}
-			return buffer.toByteArray();
+		try (var buffer = new PaddedBuffer()) {
+			buffer.write(getType());
+			encode(buffer);
+			return buffer.withPadding();
 		} catch (IOException e) {
 			// Must not happen with ByteArrayOutputStream
 			throw new RuntimeException("Unexpected IOException", e);
@@ -75,8 +67,7 @@ public abstract class PlainMessage {
 	 * @return decoded message of the respective subtype
 	 */
 	public static PlainMessage decode(byte[] bytes) throws IllegalArgumentException {
-		int padding = 0xFF & bytes[bytes.length - 1];
-		try (var in = new DataInputStream(new ByteArrayInputStream(bytes, 0, bytes.length - padding))) {
+		try (var in = PaddedBuffer.removePadding(bytes)) {
 			int type = in.read();
 			switch (type) {
 			case Text.TYPE:
