@@ -14,7 +14,6 @@
 package com.mountainminds.three4j;
 
 import static com.mountainminds.three4j.HttpSupport.UNKNOWN_RESPONSE;
-import static com.mountainminds.three4j.HttpSupport.blobBody;
 import static com.mountainminds.three4j.HttpSupport.decodeUrlParams;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import com.mountainminds.three4j.HttpSupport.MultipartEncoder;
 import com.mountainminds.three4j.HttpSupport.UrlParams;
 
 public class HttpSupportTest {
@@ -61,13 +62,14 @@ public class HttpSupportTest {
 	}
 
 	@Test
-	public void blobBody_should_create_correct_multipart_content() throws IOException {
-		var body = new String(blobBody("<content>".getBytes(US_ASCII)), US_ASCII);
-		assertEquals("--xZK2aOVCeCybl1bbgvCEas6n4cdntpzkpcLWA12SahAiBrDrkIBj3W2HMPghi3Bo\r\n" //
+	public void multipartEncoder_should_create_correct_multipart_content() throws IOException {
+		var encoder = new MultipartEncoder("hello".getBytes(US_ASCII), new Random(0));
+		assertEquals("multipart/form-data;boundary=22Pbd7157KhLr8Ry8RZmz66hYkdm", encoder.getContentType());
+		assertEquals("--22Pbd7157KhLr8Ry8RZmz66hYkdm\r\n" //
 				+ "Content-Disposition: form-data;name=\"blob\";filename=\"blob\"\r\n" //
 				+ "\r\n" //
-				+ "<content>\r\n" //
-				+ "--xZK2aOVCeCybl1bbgvCEas6n4cdntpzkpcLWA12SahAiBrDrkIBj3W2HMPghi3Bo--\r\n", body);
+				+ "hello\r\n" //
+				+ "--22Pbd7157KhLr8Ry8RZmz66hYkdm--\r\n", new String(encoder.getBody(), US_ASCII));
 	}
 
 	@Test
