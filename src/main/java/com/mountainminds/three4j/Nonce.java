@@ -31,7 +31,7 @@ public final class Nonce extends ByteArrayValue {
 
 	/**
 	 * @param value 24 bytes
-	 * @return new message id
+	 * @return new nonce
 	 */
 	public static Nonce of(byte[] value) {
 		return new Nonce(value);
@@ -39,7 +39,7 @@ public final class Nonce extends ByteArrayValue {
 
 	/**
 	 * @param hexvalue 48 character hex string
-	 * @return new message id
+	 * @return new nonce
 	 */
 	public static Nonce of(String hexvalue) {
 		return of(fromHex(hexvalue));
