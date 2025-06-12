@@ -29,8 +29,7 @@ The latest Three4J version can be obtained with the following Maven dependency:
 </dependency>
 ```
 
-Latest builds from `master` are available in this snapshot repository:
-<a href="https://s01.oss.sonatype.org/content/repositories/snapshots/">https://s01.oss.sonatype.org/content/repositories/snapshots/</a>
+Latest builds from `master` are available in the [Maven snapshot repository](https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/com/mountainminds/three4j/).
 
 
 ## Prerequisites
