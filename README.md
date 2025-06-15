@@ -25,7 +25,7 @@ The latest Three4J version can be obtained with the following Maven dependency:
 <dependency>
     <groupId>com.mountainminds</groupId>
     <artifactId>three4j</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
