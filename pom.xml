@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mountainminds</groupId>
 	<artifactId>three4j</artifactId>
-	<version>1.5.0</version>
+	<version>1.5.1-SNAPSHOT</version>
 
 	<name>Three4J - Threema Gateway Client for Java</name>
 	<description>A Java client library for the Threema Gateway</description>
@@ -186,16 +186,5 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>central</id>
-			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
-		</snapshotRepository>
-		<repository>
-			<id>central</id>
-			<url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
 
 </project>
